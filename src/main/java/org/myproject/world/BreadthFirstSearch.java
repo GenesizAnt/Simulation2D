@@ -33,12 +33,27 @@ public class BreadthFirstSearch {
 
             if (coordinateFindObj == null) { // если искомый объект не нашелся
 
-                listVisit.add(queue.poll()); // достаем из очереди объект и добавляем в Посещенные координаты
+                Coordinate x = queue.poll();
 
-                queue = replenishQueue(listVisit.get(listVisit.size() - 1)); // ищем соседей для объекта, который посетили и добавляем в очередь
+                if (x == null) {
+                    System.out.println();
+                }
+
+                listVisit.add(x); // достаем из очереди объект и добавляем в Посещенные координаты
+
+                queue = replenishQueue(x, queue);
+                // ищем соседей для объекта, который посетили и добавляем в очередь
+
+
                 queue.removeAll(listVisit);// удаляем из очереди, всех кого посетили
 
+                if (queue.isEmpty()) {
+                    System.out.println();
+                }
+
             } else {
+//                removeAllBut(queue, coordinateFindObj);
+//                pathFindToEntity.add(coordinateFindObj);
                 pathFindToEntity = pathFindToEntity(checkFindEntity(queue, creature), creature);
                 isFind = true;
             }
@@ -46,6 +61,10 @@ public class BreadthFirstSearch {
         }
 
         return pathFindToEntity;
+    }
+
+    private boolean removeAllBut(Queue<Coordinate> queue, Coordinate coordinateFindObj) {
+        return Collections.singleton(coordinateFindObj).removeIf(x -> !queue.contains(x));
     }
 
     private ArrayList<Coordinate> pathFindToEntity(Coordinate coordinate, Creature creature) {
@@ -73,8 +92,8 @@ public class BreadthFirstSearch {
         return path1;
     }
 
-    private Queue<Coordinate> replenishQueue(Coordinate parent) {
-        Queue<Coordinate> childEntity = new ArrayDeque<>();
+    private Queue<Coordinate> replenishQueue(Coordinate parent, Queue<Coordinate> queue) {
+        Queue<Coordinate> childEntity = queue;
 //        childEntity.add(parent);
 
         int startX = parent.getCordX() - 1;
@@ -133,6 +152,13 @@ public class BreadthFirstSearch {
 
         for (int i = 0; i < queueCheck.size(); i++) {
 
+//            if ((worldMap.getEntity(queueCheck.get(i)) instanceof Grass && creature instanceof Herbivore)) {
+//                return queueCheck.get(i);
+//            }
+
+            // работает
+//        for (int i = 0; i < queueCheck.size(); i++) {
+//
             if ((worldMap.getEntity(queueCheck.get(i)) instanceof Grass && creature instanceof Herbivore) ||
                     (worldMap.getEntity(queueCheck.get(i)) instanceof Herbivore && creature instanceof Predator)) {
                 return queueCheck.get(i);

@@ -28,19 +28,19 @@ public class Main {
             for (int j = 0; j < worldMap.getSizeY(); j++) {
                 if (worldMap.getMap()[i][j] instanceof Herbivore) {
 
-                    try {
-                        coordinates = search.shortcutsSearch(((Herbivore) worldMap.getMap()[i][j]));
-                    } catch (Exception e) {
-                        coordinates.add(worldMap.getMap()[i][j].getCoordinate());
-                    }
+                    coordinates = search.shortcutsSearch(((Herbivore) worldMap.getMap()[i][j]));
+
+//                    try {
+//                    } catch (Exception e) {
+//                        coordinates.add(worldMap.getMap()[i][j].getCoordinate());
+//                    }
 
 
                     Coordinate coordinate = coordinates.get(0);
 //                    coordinate.setParent(null);
-                    coordinates.remove(0);
+//                    coordinates.remove(0);
 
 
-                        coordinates = createArrayListFromParent(coordinate, worldMap);
 
 //                    coordinates = pathFindToEntity(coordinate, (Creature) worldMap.getMap()[i][j]);
 
@@ -48,6 +48,7 @@ public class Main {
             }
         }
 
+        coordinates = createArrayListFromParent(coordinates.get(0), worldMap);
 
 
 //        ArrayList<Coordinate> coor = new ArrayList<>();
