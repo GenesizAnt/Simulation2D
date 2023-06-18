@@ -23,6 +23,7 @@ public class BreadthFirstSearch {
     public ArrayList<Coordinate> shortcutsSearch(Creature creature) {
 
         ArrayList<Coordinate> pathFindToEntity = new ArrayList<>();
+//        Coordinate coordinateFindObj = null;
 
 //        creature.getCoordinate().setParent(creature.getCoordinate());
         queue.add(creature.getCoordinate()); // добавляем в очередь первые координаты
@@ -53,8 +54,11 @@ public class BreadthFirstSearch {
 
             } else {
 //                removeAllBut(queue, coordinateFindObj);
+
+                pathFindToEntity = getPathFindToEntity(coordinateFindObj);
+
 //                pathFindToEntity.add(coordinateFindObj);
-                pathFindToEntity = pathFindToEntity(checkFindEntity(queue, creature), creature);
+//                pathFindToEntity = pathFindToEntity(checkFindEntity(queue, creature), creature);
                 isFind = true;
             }
 
@@ -63,34 +67,49 @@ public class BreadthFirstSearch {
         return pathFindToEntity;
     }
 
-    private boolean removeAllBut(Queue<Coordinate> queue, Coordinate coordinateFindObj) {
-        return Collections.singleton(coordinateFindObj).removeIf(x -> !queue.contains(x));
-    }
+    private ArrayList<Coordinate> getPathFindToEntity(Coordinate coordinateFindObj) {
 
-    private ArrayList<Coordinate> pathFindToEntity(Coordinate coordinate, Creature creature) {
-        ArrayList<Coordinate> path = new ArrayList<>();
+        ArrayList<Coordinate> coordinateList = new ArrayList<>(); // Создаем новый ArrayList
 
-        path = findPathRecursion(coordinate, creature, path);
-
-        Collections.reverse(path);
-
-        return path;
-    }
-
-    private ArrayList<Coordinate> findPathRecursion(Coordinate coordinate, Creature creature, ArrayList<Coordinate> path) {
-
-        ArrayList<Coordinate> path1 = path;
-
-        path1.add(coordinate);
-
-        if (coordinate.equals(creature.getCoordinate())) {
-            findPathRecursion(coordinate.getParent(), creature, path1);
-        } else {
-            return path1;
+        // Используя цикл, добавляем новые объекты Coordinate, пока не достигнем изначального объекта
+        while (!(worldMap.getEntity(coordinateFindObj) instanceof Herbivore)) {
+            coordinateList.add(coordinateFindObj); // Добавляем текущий объект в ArrayList
+            coordinateFindObj = coordinateFindObj.getParent(); // Заменяем текущий объект его parent'ом
         }
 
-        return path1;
+        Collections.reverse(coordinateList);
+
+        return coordinateList; // Возвращаем полученный ArrayList
     }
+
+//    private boolean removeAllBut(Queue<Coordinate> queue, Coordinate coordinateFindObj) {
+//        return Collections.singleton(coordinateFindObj).removeIf(x -> !queue.contains(x));
+//    }
+
+//    private ArrayList<Coordinate> pathFindToEntity(Coordinate coordinate, Creature creature) {
+//        ArrayList<Coordinate> path = new ArrayList<>();
+//
+//        path = findPathRecursion(coordinate, creature, path);
+//
+//        Collections.reverse(path);
+//
+//        return path;
+//    }
+
+//    private ArrayList<Coordinate> findPathRecursion(Coordinate coordinate, Creature creature, ArrayList<Coordinate> path) {
+//
+//        ArrayList<Coordinate> path1 = path;
+//
+//        path1.add(coordinate);
+//
+//        if (coordinate.equals(creature.getCoordinate())) {
+//            findPathRecursion(coordinate.getParent(), creature, path1);
+//        } else {
+//            return path1;
+//        }
+//
+//        return path1;
+//    }
 
     private Queue<Coordinate> replenishQueue(Coordinate parent, Queue<Coordinate> queue) {
         Queue<Coordinate> childEntity = queue;
