@@ -1,8 +1,8 @@
 package org.myproject.entity.animate;
 
 import org.myproject.entity.Entity;
-import org.myproject.start.Main;
 import org.myproject.world.Coordinate;
+import org.myproject.world.WorldMap;
 
 public abstract class Creature extends Entity {
 
@@ -15,5 +15,5 @@ public abstract class Creature extends Entity {
         this.sizeHP = (int) (Math.random() * 40) + 1;
     }
 
-    public abstract void makeMove();
+    public abstract void makeMove(WorldMap worldMap);
 }

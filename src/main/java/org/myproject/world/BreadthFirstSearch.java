@@ -13,7 +13,7 @@ public class BreadthFirstSearch {
 
     Queue<Coordinate> queue = new ArrayDeque<>();
     ArrayList<Coordinate> listVisit = new ArrayList<>();
-    private WorldMap worldMap;
+    private final WorldMap worldMap;
     private boolean isFind = false;
 
     public BreadthFirstSearch(WorldMap worldMap) {
@@ -23,97 +23,44 @@ public class BreadthFirstSearch {
     public ArrayList<Coordinate> shortcutsSearch(Creature creature) {
 
         ArrayList<Coordinate> pathFindToEntity = new ArrayList<>();
-//        Coordinate coordinateFindObj = null;
 
-//        creature.getCoordinate().setParent(creature.getCoordinate());
         queue.add(creature.getCoordinate()); // добавляем в очередь первые координаты
 
         while (!isFind) {
-
             Coordinate coordinateFindObj = checkFindEntity(queue, creature);// проверяем - искомый ли здесь объект?
 
             if (coordinateFindObj == null) { // если искомый объект не нашелся
+                Coordinate visitedCoordinate = queue.poll(); // посещенная координата из очереди
 
-                Coordinate x = queue.poll();
+                listVisit.add(visitedCoordinate); // добавляем в список Посещенные координаты
 
-                if (x == null) {
-                    System.out.println();
-                }
+                queue = replenishQueue(Objects.requireNonNull(visitedCoordinate), queue);// ищем соседей для объекта, который посетили и добавляем в очередь
 
-                listVisit.add(x); // достаем из очереди объект и добавляем в Посещенные координаты
-
-                queue = replenishQueue(x, queue);
-                // ищем соседей для объекта, который посетили и добавляем в очередь
-
-
-                queue.removeAll(listVisit);// удаляем из очереди, всех кого посетили
-
-                if (queue.isEmpty()) {
-                    System.out.println();
-                }
+                queue.removeAll(listVisit);// удаляем из очереди, все координаты которые посетили
 
             } else {
-//                removeAllBut(queue, coordinateFindObj);
 
-                pathFindToEntity = getPathFindToEntity(coordinateFindObj);
-
-//                pathFindToEntity.add(coordinateFindObj);
-//                pathFindToEntity = pathFindToEntity(checkFindEntity(queue, creature), creature);
+                pathFindToEntity = getPathFindToEntity(coordinateFindObj); //если нашли нужный объект через его родителей "разворачиваем" кратчайший путь
                 isFind = true;
-            }
 
+            }
         }
 
         return pathFindToEntity;
     }
 
     private ArrayList<Coordinate> getPathFindToEntity(Coordinate coordinateFindObj) {
-
-        ArrayList<Coordinate> coordinateList = new ArrayList<>(); // Создаем новый ArrayList
-
-        // Используя цикл, добавляем новые объекты Coordinate, пока не достигнем изначального объекта
-        while (!(worldMap.getEntity(coordinateFindObj) instanceof Herbivore)) {
-            coordinateList.add(coordinateFindObj); // Добавляем текущий объект в ArrayList
-            coordinateFindObj = coordinateFindObj.getParent(); // Заменяем текущий объект его parent'ом
+        ArrayList<Coordinate> coordinateList = new ArrayList<>();
+        while (!(worldMap.getEntity(coordinateFindObj) instanceof Herbivore)) { //ToDo Проблема скорее всего здесь
+            coordinateList.add(coordinateFindObj);
+            coordinateFindObj = coordinateFindObj.getParent();
         }
-
         Collections.reverse(coordinateList);
-
-        return coordinateList; // Возвращаем полученный ArrayList
+        return coordinateList;
     }
-
-//    private boolean removeAllBut(Queue<Coordinate> queue, Coordinate coordinateFindObj) {
-//        return Collections.singleton(coordinateFindObj).removeIf(x -> !queue.contains(x));
-//    }
-
-//    private ArrayList<Coordinate> pathFindToEntity(Coordinate coordinate, Creature creature) {
-//        ArrayList<Coordinate> path = new ArrayList<>();
-//
-//        path = findPathRecursion(coordinate, creature, path);
-//
-//        Collections.reverse(path);
-//
-//        return path;
-//    }
-
-//    private ArrayList<Coordinate> findPathRecursion(Coordinate coordinate, Creature creature, ArrayList<Coordinate> path) {
-//
-//        ArrayList<Coordinate> path1 = path;
-//
-//        path1.add(coordinate);
-//
-//        if (coordinate.equals(creature.getCoordinate())) {
-//            findPathRecursion(coordinate.getParent(), creature, path1);
-//        } else {
-//            return path1;
-//        }
-//
-//        return path1;
-//    }
 
     private Queue<Coordinate> replenishQueue(Coordinate parent, Queue<Coordinate> queue) {
         Queue<Coordinate> childEntity = queue;
-//        childEntity.add(parent);
 
         int startX = parent.getCordX() - 1;
         if (startX < 0) {
@@ -146,51 +93,23 @@ public class BreadthFirstSearch {
                     if (worldMap.getEntity(i, j).getCoordinate().getParent() == null) {
                         worldMap.getEntity(i, j).getCoordinate().setParent(parent);
                     }
+
                     childEntity.add(worldMap.getEntity(i, j).getCoordinate());
-
-//                    childEntity.add(new Coordinate(i, j, parent));
-
                 }
             }
         }
-
         return childEntity;
     }
 
     private Coordinate checkFindEntity(Queue<Coordinate> queue, Creature creature) {
-        ArrayList<Coordinate> queueCheck = new ArrayList<>();
-        for (Coordinate coordinate : queue) {
-            queueCheck.add(coordinate);
-        }
-//        Coordinate coordinateFindObj = queueCheck.get(0);
-//        if ((worldMap.getEntity(coordinateFindObj) instanceof Grass && creature instanceof Herbivore) ||
-//                (worldMap.getEntity(coordinateFindObj) instanceof Herbivore && creature instanceof Predator)) {
-//            return queue.peek();
-//        }
+        ArrayList<Coordinate> queueCheck = new ArrayList<>(queue);
 
-
-        for (int i = 0; i < queueCheck.size(); i++) {
-
-//            if ((worldMap.getEntity(queueCheck.get(i)) instanceof Grass && creature instanceof Herbivore)) {
-//                return queueCheck.get(i);
-//            }
-
-            // работает
-//        for (int i = 0; i < queueCheck.size(); i++) {
-//
-            if ((worldMap.getEntity(queueCheck.get(i)) instanceof Grass && creature instanceof Herbivore) ||
-                    (worldMap.getEntity(queueCheck.get(i)) instanceof Herbivore && creature instanceof Predator)) {
-                return queueCheck.get(i);
+        for (Coordinate coordinate : queueCheck) {
+            if ((worldMap.getEntity(coordinate) instanceof Grass && creature instanceof Herbivore) ||
+                    (worldMap.getEntity(coordinate) instanceof Herbivore && creature instanceof Predator)) {
+                return coordinate;
             }
-
         }
-
-//        while (!queueCheck.isEmpty()) {
-//            if (worldMap.getEntity(Objects.requireNonNull(queueCheck.peek())) instanceof Grass && creature instanceof Herbivore ||
-//                    worldMap.getEntity(Objects.requireNonNull(queueCheck.peek())) instanceof Herbivore && creature instanceof Predator) {
-//
-//            }
-//        }
         return null;
     }
 }

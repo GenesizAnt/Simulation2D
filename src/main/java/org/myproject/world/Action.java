@@ -18,7 +18,7 @@ public class Action {
 
     private void inhabitMap() {
         int countHerbivore = 1;
-        int countPredator = 0;
+        int countPredator = 1;
         int countGrass = 1;
         int countRock = 5;
         int countTree = 3;
@@ -54,5 +54,13 @@ public class Action {
             }
             countAllEntity = countHerbivore + countPredator + countGrass + countGrass + countRock + countTree;
         }
+    }
+
+    public WorldMap getWorldMap() {
+        return worldMap;
+    }
+
+    public void setWorldMap(WorldMap worldMap) {
+        this.worldMap = worldMap;
     }
 }
