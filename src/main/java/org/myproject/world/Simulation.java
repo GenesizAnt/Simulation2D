@@ -14,7 +14,7 @@ import java.util.HashMap;
 
 public class Simulation {
 
-    WorldMap worldMap = new WorldMap(5,5);
+    WorldMap worldMap = new WorldMap(10,10);
 //    Action action = new Action(worldMap);
     BreadthFirstSearch search = new BreadthFirstSearch(worldMap);
     private Entity[][] map;

@@ -16,4 +16,12 @@ public abstract class Creature extends Entity {
     }
 
     public abstract void makeMove(WorldMap worldMap);
+
+    public void setSizeHP(int sizeHP) {
+        this.sizeHP = sizeHP;
+    }
+
+    public int getSizeHP() {
+        return sizeHP;
+    }
 }

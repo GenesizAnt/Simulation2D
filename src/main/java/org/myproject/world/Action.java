@@ -20,8 +20,8 @@ public class Action {
         int countHerbivore = 1;
         int countPredator = 1;
         int countGrass = 1;
-        int countRock = 5;
-        int countTree = 3;
+        int countRock = 3;
+        int countTree = 0;
         int countAllEntity = -1;
 
 //        int countHerbivore = 2;

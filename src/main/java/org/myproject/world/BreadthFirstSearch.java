@@ -14,6 +14,7 @@ public class BreadthFirstSearch {
     Queue<Coordinate> queue = new ArrayDeque<>();
     ArrayList<Coordinate> listVisit = new ArrayList<>();
     private final WorldMap worldMap;
+//    private final WorldMap worldMapCopy;
     private boolean isFind = false;
 
     public BreadthFirstSearch(WorldMap worldMap) {
@@ -21,6 +22,8 @@ public class BreadthFirstSearch {
     }
 
     public ArrayList<Coordinate> shortcutsSearch(Creature creature) {
+
+        cleanMapParent(worldMap);
 
         ArrayList<Coordinate> pathFindToEntity = new ArrayList<>();
 
@@ -47,6 +50,14 @@ public class BreadthFirstSearch {
         }
 
         return pathFindToEntity;
+    }
+
+    private void cleanMapParent(WorldMap worldMap) {
+        for (int i = 0; i < worldMap.getSizeX(); i++) {
+            for (int j = 0; j < worldMap.getSizeY(); j++) {
+                worldMap.getMap()[i][j].getCoordinate().setParent(null);
+            }
+        }
     }
 
     private ArrayList<Coordinate> getPathFindToEntity(Coordinate coordinateFindObj) {
