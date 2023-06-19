@@ -14,7 +14,7 @@ public class BreadthFirstSearch {
     Queue<Coordinate> queue = new ArrayDeque<>();
     ArrayList<Coordinate> listVisit = new ArrayList<>();
     private final WorldMap worldMap;
-//    private final WorldMap worldMapCopy;
+    //    private final WorldMap worldMapCopy;
     private boolean isFind = false;
 
     public BreadthFirstSearch(WorldMap worldMap) {
@@ -43,7 +43,7 @@ public class BreadthFirstSearch {
 
             } else {
 
-                pathFindToEntity = getPathFindToEntity(coordinateFindObj); //если нашли нужный объект через его родителей "разворачиваем" кратчайший путь
+                pathFindToEntity = getPathFindToEntity(coordinateFindObj, creature); //если нашли нужный объект через его родителей "разворачиваем" кратчайший путь
                 isFind = true;
 
             }
@@ -60,12 +60,23 @@ public class BreadthFirstSearch {
         }
     }
 
-    private ArrayList<Coordinate> getPathFindToEntity(Coordinate coordinateFindObj) {
+    private ArrayList<Coordinate> getPathFindToEntity(Coordinate coordinateFindObj, Creature creature) {
         ArrayList<Coordinate> coordinateList = new ArrayList<>();
-        while (!(worldMap.getEntity(coordinateFindObj) instanceof Herbivore)) { //ToDo Проблема скорее всего здесь
-            coordinateList.add(coordinateFindObj);
-            coordinateFindObj = coordinateFindObj.getParent();
+
+        if (creature instanceof Herbivore) {
+            while (!(worldMap.getEntity(coordinateFindObj) instanceof Herbivore)) {//ToDo Проблема скорее всего здесь
+//            while (!(worldMap.getEntity(coordinateFindObj) instanceof Herbivore) это правильная строчка
+                coordinateList.add(coordinateFindObj);
+                coordinateFindObj = coordinateFindObj.getParent();
+            }
+        } else if (creature instanceof Predator) {
+            while (!(worldMap.getEntity(coordinateFindObj) instanceof Predator)) {
+//            while (!(worldMap.getEntity(coordinateFindObj) instanceof Herbivore) это правильная строчка
+                coordinateList.add(coordinateFindObj);
+                coordinateFindObj = coordinateFindObj.getParent();
+            }
         }
+
         Collections.reverse(coordinateList);
         return coordinateList;
     }
@@ -96,10 +107,11 @@ public class BreadthFirstSearch {
 
         for (int i = startX; i <= endX; i++) {
             for (int j = startY; j <= endY; j++) {
-                if (!(worldMap.getEntity(new Coordinate(i, j)) instanceof Herbivore) &&
+                if (
+//                        !(worldMap.getEntity(new Coordinate(i, j)) instanceof Herbivore) &&
                         !(worldMap.getEntity(new Coordinate(i, j)) instanceof Predator) &&
                         !(worldMap.getEntity(new Coordinate(i, j)) instanceof Tree) &&
-                        !(worldMap.getEntity(new Coordinate(i, j)) instanceof Rock)) {
+                                !(worldMap.getEntity(new Coordinate(i, j)) instanceof Rock)) {
 
                     if (worldMap.getEntity(i, j).getCoordinate().getParent() == null) {
                         worldMap.getEntity(i, j).getCoordinate().setParent(parent);

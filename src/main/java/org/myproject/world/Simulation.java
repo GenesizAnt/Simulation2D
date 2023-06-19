@@ -46,6 +46,8 @@ public class Simulation {
             for (int j = 0; j < worldMap.getSizeX(); j++) {
                 if (worldMap.getEntity(i, j) instanceof Herbivore) {
                     ((Herbivore) worldMap.getEntity(i, j)).makeMove(worldMap);
+                } else if (worldMap.getEntity(i, j) instanceof Predator) {
+                    ((Predator) worldMap.getEntity(i, j)).makeMove(worldMap);
                 }
             }
         }

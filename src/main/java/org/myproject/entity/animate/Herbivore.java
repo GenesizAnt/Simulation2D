@@ -10,8 +10,6 @@ import java.util.ArrayList;
 
 public class Herbivore extends Creature {
 
-//    BreadthFirstSearch fastTrack = new BreadthFirstSearch();
-
     public Herbivore(Coordinate coordinate) {
         super(coordinate);
     }
@@ -63,6 +61,10 @@ public class Herbivore extends Creature {
     @Override
     public String toString() {
         return "  O  ";
+    }
+
+    public int getUpHP() {
+        return (int) (Math.random() * this.getSizeHP()) + 1;
     }
 
 }
