@@ -24,4 +24,8 @@ public abstract class Creature extends Entity {
     public int getSizeHP() {
         return sizeHP;
     }
+
+    public void searchFastTrack(WorldMap worldMap) {
+
+    }
 }

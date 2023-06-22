@@ -4,13 +4,6 @@ import org.myproject.entity.*;
 import org.myproject.entity.animate.Creature;
 import org.myproject.entity.animate.Herbivore;
 import org.myproject.entity.animate.Predator;
-import org.myproject.entity.inanimate.Grass;
-import org.myproject.entity.inanimate.Ground;
-import org.myproject.entity.inanimate.Rock;
-import org.myproject.entity.inanimate.Tree;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Simulation {
 
@@ -28,7 +21,9 @@ public class Simulation {
         while (!isSimulationPause) {
 //            showWorldMap();
             drawWordAfterTurn();
-            entityTurn();
+            entitySearchFastTrack();
+            entityTurnPredator();
+            entityTurnHerbivore();
             checkIsSimulationPause(daySimulation);
             try {
                 Thread.sleep(1500);
@@ -39,22 +34,42 @@ public class Simulation {
 
     }
 
-    private void entityTurn() {
-//        WorldMap map1 = action.getWorldMap();
+    private void entitySearchFastTrack() {
+        for (int i = 0; i < worldMap.getSizeX(); i++) {
+            for (int j = 0; j < worldMap.getSizeX(); j++) {
+                if (worldMap.getEntity(i, j) instanceof Creature) {
+                    ((Creature) worldMap.getEntity(i, j)).searchFastTrack(worldMap);
+                }
+            }
+        }
+    }
+
+    private void entityTurnHerbivore() {
+        Entity[][] mapCopy = worldMap.getMap();
 
         for (int i = 0; i < worldMap.getSizeX(); i++) {
             for (int j = 0; j < worldMap.getSizeX(); j++) {
                 if (worldMap.getEntity(i, j) instanceof Herbivore) {
                     ((Herbivore) worldMap.getEntity(i, j)).makeMove(worldMap);
-                } else if (worldMap.getEntity(i, j) instanceof Predator) {
+                }
+            }
+        }
+//        action.setWorldMap(map1);
+//        daySimulation++;
+    }
+
+    private void entityTurnPredator() {
+        for (int i = 0; i < worldMap.getSizeX(); i++) {
+            for (int j = 0; j < worldMap.getSizeX(); j++) {
+                if (worldMap.getEntity(i, j) instanceof Predator) {
                     ((Predator) worldMap.getEntity(i, j)).makeMove(worldMap);
                 }
             }
         }
-
-//        action.setWorldMap(map1);
         daySimulation++;
     }
+
+
 
     private void showWorldMap() {
         System.out.print("\nSimulation World day " + daySimulation);
@@ -107,6 +122,7 @@ public class Simulation {
 //    }
 //
     private void drawWordAfterTurn() {
+        System.out.print("\nSimulation World day " + daySimulation);
         for (int i = 0; i < worldMap.getSizeX(); i++) {
             System.out.println();
             for (int j = 0; j < worldMap.getSizeY(); j++) {
@@ -127,7 +143,6 @@ public class Simulation {
             }
         }
         System.out.println();
-        System.out.println("____________");
     }
 //
 //    private void turnWord() {

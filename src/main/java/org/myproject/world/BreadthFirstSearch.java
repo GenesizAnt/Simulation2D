@@ -14,7 +14,6 @@ public class BreadthFirstSearch {
     Queue<Coordinate> queue = new ArrayDeque<>();
     ArrayList<Coordinate> listVisit = new ArrayList<>();
     private final WorldMap worldMap;
-    //    private final WorldMap worldMapCopy;
     private boolean isFind = false;
 
     public BreadthFirstSearch(WorldMap worldMap) {
@@ -22,6 +21,9 @@ public class BreadthFirstSearch {
     }
 
     public ArrayList<Coordinate> shortcutsSearch(Creature creature) {
+//        if (creature instanceof Predator) {
+//            drawWordAfterTurn(); //ToDo перемещает животных на карте, которые походили раньше текущего животного
+//        }
 
         cleanMapParent(worldMap);
 
@@ -60,26 +62,41 @@ public class BreadthFirstSearch {
         }
     }
 
+    //ToDo Поиск короткого пути - сделать поиск объекта, а от него по диагонали
+    // сделать возврат к точке, если препятствие, то обойти. Тогда путь будет прямой
     private ArrayList<Coordinate> getPathFindToEntity(Coordinate coordinateFindObj, Creature creature) {
         ArrayList<Coordinate> coordinateList = new ArrayList<>();
-
-        if (creature instanceof Herbivore) {
-            while (!(worldMap.getEntity(coordinateFindObj) instanceof Herbivore)) {//ToDo Проблема скорее всего здесь
-//            while (!(worldMap.getEntity(coordinateFindObj) instanceof Herbivore) это правильная строчка
-                coordinateList.add(coordinateFindObj);
-                coordinateFindObj = coordinateFindObj.getParent();
-            }
-        } else if (creature instanceof Predator) {
-            while (!(worldMap.getEntity(coordinateFindObj) instanceof Predator)) {
-//            while (!(worldMap.getEntity(coordinateFindObj) instanceof Herbivore) это правильная строчка
-                coordinateList.add(coordinateFindObj);
-                coordinateFindObj = coordinateFindObj.getParent();
-            }
+        while (!(worldMap.getEntity(coordinateFindObj).getCoordinate().equals(creature.getCoordinate()))) {
+            coordinateList.add(coordinateFindObj);
+            coordinateFindObj = coordinateFindObj.getParent();
         }
+
 
         Collections.reverse(coordinateList);
         return coordinateList;
     }
+
+// рабочий код
+//    private ArrayList<Coordinate> getPathFindToEntity(Coordinate coordinateFindObj, Creature creature) {
+//        ArrayList<Coordinate> coordinateList = new ArrayList<>();
+//
+//        if (creature instanceof Herbivore) {
+//            while (!(worldMap.getEntity(coordinateFindObj).getCoordinate().equals(creature.getCoordinate()))) {
+//                coordinateList.add(coordinateFindObj);
+//                coordinateFindObj = coordinateFindObj.getParent();
+//            }
+//        } else if (creature instanceof Predator) {
+//            while (!(worldMap.getEntity(coordinateFindObj) instanceof Predator)) {
+////            while (!(worldMap.getEntity(coordinateFindObj) instanceof Herbivore) это правильная строчка
+//                coordinateList.add(coordinateFindObj);
+//                coordinateFindObj = coordinateFindObj.getParent();
+//            }
+//        }
+//
+//        Collections.reverse(coordinateList);
+//        return coordinateList;
+//    }
+
 
     private Queue<Coordinate> replenishQueue(Coordinate parent, Queue<Coordinate> queue) {
         Queue<Coordinate> childEntity = queue;
@@ -110,14 +127,14 @@ public class BreadthFirstSearch {
                 if (
 //                        !(worldMap.getEntity(new Coordinate(i, j)) instanceof Herbivore) &&
                         !(worldMap.getEntity(new Coordinate(i, j)) instanceof Predator) &&
-                        !(worldMap.getEntity(new Coordinate(i, j)) instanceof Tree) &&
+                                !(worldMap.getEntity(new Coordinate(i, j)) instanceof Tree) &&
                                 !(worldMap.getEntity(new Coordinate(i, j)) instanceof Rock)) {
 
                     if (worldMap.getEntity(i, j).getCoordinate().getParent() == null) {
                         worldMap.getEntity(i, j).getCoordinate().setParent(parent);
                     }
-
                     childEntity.add(worldMap.getEntity(i, j).getCoordinate());
+
                 }
             }
         }
@@ -135,4 +152,25 @@ public class BreadthFirstSearch {
         }
         return null;
     }
+//
+//
+//    private void drawWordAfterTurn() {
+//        for (int i = 0; i < worldMap.getSizeX(); i++) {
+//            for (int j = 0; j < worldMap.getSizeY(); j++) {
+//                if (worldMap.getSetHerbivore().containsKey(new Coordinate(i, j))) {
+//                    worldMap.getMap()[i][j] = worldMap.getSetHerbivore().get(new Coordinate(i, j));
+//                } else if (worldMap.getSetPredator().containsKey(new Coordinate(i, j))) {
+//                    worldMap.getMap()[i][j] = worldMap.getSetPredator().get(new Coordinate(i, j));
+//                } else if (worldMap.getSetGrass().containsKey(new Coordinate(i, j))) {
+//                    worldMap.getMap()[i][j] = worldMap.getSetGrass().get(new Coordinate(i, j));
+//                } else if (worldMap.getSetRock().containsKey(new Coordinate(i, j))) {
+//                    worldMap.getMap()[i][j] = worldMap.getSetRock().get(new Coordinate(i, j));
+//                } else if (worldMap.getSetTree().containsKey(new Coordinate(i, j))) {
+//                    worldMap.getMap()[i][j] = worldMap.getSetTree().get(new Coordinate(i, j));
+//                } else if (worldMap.getSetGround().containsKey(new Coordinate(i, j))) {
+//                    worldMap.getMap()[i][j] = worldMap.getSetGround().get(new Coordinate(i, j));
+//                }
+//            }
+//        }
+//    }
 }
