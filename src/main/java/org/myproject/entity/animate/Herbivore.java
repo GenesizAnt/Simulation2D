@@ -16,7 +16,7 @@ public class Herbivore extends Creature {
 
     public Herbivore(Coordinate coordinate) {
         super(coordinate);
-        this.upHP = (int) (Math.random() * 40) + 1;
+        this.upHP = (int) (Math.random() * 30) + 1;
     }
 
     @Override
@@ -41,9 +41,6 @@ public class Herbivore extends Creature {
                 worldMap.getSetHerbivore().remove(this.getCoordinate());
                 worldMap.getSetGround().put(this.getCoordinate(), new Ground(this.getCoordinate()));
                 this.setCoordinate(coordinates.get(0));
-                if (worldMap.getSetGrass().containsKey(coordinates.get(0))) {
-                    worldMap.getSetGrass().remove(coordinates.get(0));
-                }
             }
         }
     }

@@ -9,7 +9,7 @@ public class Grass extends Entity {
 
     public Grass(Coordinate coordinate) {
         super(coordinate);
-        this.upHP = (int) (Math.random() * 5) + 1;
+        this.upHP = (int) (Math.random() * 10) + 1;
     }
 
     public int getUpHP() {
