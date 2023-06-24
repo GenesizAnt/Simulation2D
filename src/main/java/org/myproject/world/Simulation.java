@@ -4,8 +4,34 @@ import org.myproject.entity.*;
 import org.myproject.entity.animate.Creature;
 import org.myproject.entity.animate.Herbivore;
 import org.myproject.entity.animate.Predator;
+import org.myproject.entity.inanimate.Grass;
+import org.myproject.entity.inanimate.Ground;
 
 public class Simulation {
+
+    /**
+     * Главный класс приложения, включает в себя:
+     *
+     * Карту
+     * Счётчик ходов
+     * Рендерер поля
+     * Actions - список действий, исполняемых перед стартом симуляции или на каждом ходу (детали ниже)
+     * Методы:
+     *
+     * nextTurn() - просимулировать и отрендерить один ход
+     * startSimulation() - запустить бесконечный цикл симуляции и рендеринга
+     * pauseSimulation() - приостановить бесконечный цикл симуляции и рендеринга
+     *
+     * Реализовать симуляцию и подобрать различные значения так, чтобы взаимодействия внутри мира получились максимально интересными:
+     *
+     * Размер поля
+     * Диапазоны HP и скорости существ
+     * Диапазон атаки хищников
+     * Опциональные идеи для усложнения проекта:
+     *
+     * Механика размножения существ
+     * Механика голода, когда от отсутствия пищи у них начинает уменьшаться HP
+     */
 
     WorldMap worldMap = new WorldMap(10,10);
 //    Action action = new Action(worldMap);
@@ -16,22 +42,46 @@ public class Simulation {
 
     public void startSimulation() {
 
-//        actions.initAction(this.fieldWorld, quantityHerbivore, quantityPredator, quantityRock, quantityTree, quantityGrass);
+        while (true) {
 
-        while (!isSimulationPause) {
-//            showWorldMap();
+            addNewCreatures();
             drawWordAfterTurn();
             entitySearchFastTrack();
             entityTurnPredator();
             entityTurnHerbivore();
-            checkIsSimulationPause(daySimulation);
+
             try {
-                Thread.sleep(1500);
+                Thread.sleep(10);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }
 
+    }
+
+    //ToDo создать метод топтания травы
+
+    private void addNewCreatures() {
+        if (worldMap.getSetGrass().isEmpty()) {
+            int countNewGrass = 5;
+            for (int i = 0; i <= countNewGrass; i++) {
+                int randomCoordinate = getRandomCoordinateGround();
+                Coordinate coordinate = (Coordinate) worldMap.getSetGround().keySet().toArray()[randomCoordinate];
+                worldMap.getSetGrass().put(coordinate, new Grass(new Coordinate(coordinate.getCordX(), coordinate.getCordY())));
+                worldMap.getSetGround().remove(coordinate);
+            }
+            int randomCoordinate = (int) ((Math.random() * worldMap.getSetGround().size()));
+            Coordinate coordinate = (Coordinate) worldMap.getSetGround().keySet().toArray()[randomCoordinate];
+            worldMap.getSetHerbivore().put(coordinate, new Herbivore(new Coordinate(coordinate.getCordX(), coordinate.getCordY()))); //если скушали всю травку, добавляем живтоное
+            worldMap.getSetGround().remove(coordinate);
+            if (worldMap.getSetGrass().containsKey(coordinate)) {
+                worldMap.getSetGrass().remove(coordinate);
+            }
+        }
+    }
+
+    private int getRandomCoordinateGround() {
+        return (int) ((Math.random() * worldMap.getSetGround().size()));
     }
 
     private void entitySearchFastTrack() {
@@ -45,8 +95,6 @@ public class Simulation {
     }
 
     private void entityTurnHerbivore() {
-        Entity[][] mapCopy = worldMap.getMap();
-
         for (int i = 0; i < worldMap.getSizeX(); i++) {
             for (int j = 0; j < worldMap.getSizeX(); j++) {
                 if (worldMap.getEntity(i, j) instanceof Herbivore) {
@@ -54,8 +102,6 @@ public class Simulation {
                 }
             }
         }
-//        action.setWorldMap(map1);
-//        daySimulation++;
     }
 
     private void entityTurnPredator() {
@@ -76,51 +122,6 @@ public class Simulation {
         worldMap.drawMap();
     }
 
-    private boolean checkIsSimulationPause(int turnCount) {
-        //дать на выбор несколько вариантов как продолжать дальнейшую симуляцию
-        //после 10 ходов пауза
-        //если сьели всех животных
-        //вопрос - хотите перейти на пошаговую симуляцию
-        return false;
-    }
-
-//    public void getEntityWorld() {
-//        for (int i = 0; i < action.getWorldMap().getSizeX(); i++) {
-//            for (int j = 0; j < action.getWorldMap().getSizeX(); j++) {
-//                if (action.getWorldMap().getMap()[i][j] instanceof Herbivore) {
-//                    setHerbivore.put(new Coordinate(i, j), (Herbivore) action.getWorldMap().getMap()[i][j]);
-//                } else if (action.getWorldMap().getMap()[i][j] instanceof Predator) {
-//                    setPredator.put(new Coordinate(i, j), (Predator) action.getWorldMap().getMap()[i][j]);
-//                } else if (action.getWorldMap().getMap()[i][j] instanceof Grass) {
-//                    setGrass.put(new Coordinate(i, j), (Grass) action.getWorldMap().getMap()[i][j]);
-//                } else if (action.getWorldMap().getMap()[i][j] instanceof Rock) {
-//                    setRock.put(new Coordinate(i, j), (Rock) action.getWorldMap().getMap()[i][j]);
-//                } else if (action.getWorldMap().getMap()[i][j] instanceof Tree) {
-//                    setTree.put(new Coordinate(i, j), (Tree) action.getWorldMap().getMap()[i][j]);
-//                } else if (action.getWorldMap().getMap()[i][j] instanceof Ground) {
-//                    setGround.put(new Coordinate(i, j), (Ground) action.getWorldMap().getMap()[i][j]);
-//                }
-//            }
-//        }
-//    }
-
-
-//    public void generateTurn() {
-//
-//        while (true) {
-//            worldMap.drawMap();
-//
-//            turnWord();
-//            drawWordAfterTurn();
-//
-//            try {
-//                Thread.sleep(500);
-//            } catch (InterruptedException e) {
-//                throw new RuntimeException(e);
-//            }
-//        }
-//    }
-//
     private void drawWordAfterTurn() {
         System.out.print("\nSimulation World day " + daySimulation);
         for (int i = 0; i < worldMap.getSizeX(); i++) {

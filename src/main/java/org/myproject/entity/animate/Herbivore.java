@@ -16,17 +16,13 @@ public class Herbivore extends Creature {
 
     public Herbivore(Coordinate coordinate) {
         super(coordinate);
-        this.upHP = (int) (Math.random() * 5) + 1;
+        this.upHP = (int) (Math.random() * 40) + 1;
     }
 
     @Override
     public void searchFastTrack(WorldMap worldMap) {
-        try {
-            BreadthFirstSearch fastTrack = new BreadthFirstSearch(worldMap);
-            coordinates = fastTrack.shortcutsSearch(this);
-        } catch (Exception e) {
-
-        }
+        BreadthFirstSearch fastTrack = new BreadthFirstSearch(worldMap);
+        coordinates = fastTrack.shortcutsSearch(this);
     }
 
     @Override
@@ -45,6 +41,9 @@ public class Herbivore extends Creature {
                 worldMap.getSetHerbivore().remove(this.getCoordinate());
                 worldMap.getSetGround().put(this.getCoordinate(), new Ground(this.getCoordinate()));
                 this.setCoordinate(coordinates.get(0));
+                if (worldMap.getSetGrass().containsKey(coordinates.get(0))) {
+                    worldMap.getSetGrass().remove(coordinates.get(0));
+                }
             }
         }
     }

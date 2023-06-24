@@ -19,13 +19,9 @@ public class Predator extends Creature {
 
     @Override
     public void searchFastTrack(WorldMap worldMap) {
-        try {
-            Creature creature = this;
-            BreadthFirstSearch fastTrack = new BreadthFirstSearch(worldMap);
-            coordinates = fastTrack.shortcutsSearch(creature);
-        } catch (Exception e) {
-
-        }
+        BreadthFirstSearch fastTrack = new BreadthFirstSearch(worldMap);
+        Creature creature = this;
+        coordinates = fastTrack.shortcutsSearch(creature);
     }
 
     @Override
@@ -38,6 +34,19 @@ public class Predator extends Creature {
         if (!coordinates.isEmpty()) {
 
             if (worldMap.getSetPredator().containsKey(coordinates.get(0))) {
+//                if (!(checkHerbivoreAround(worldMap, this) == null)) {
+//                    Coordinate coordinate = checkHerbivoreAround(worldMap, this);
+//                    worldMap.getSetHerbivore().get(coordinate).setSizeHP(worldMap.getSetHerbivore().get(coordinate).getSizeHP() - this.getAttackPower());
+//                    if (worldMap.getSetHerbivore().get(coordinate).getSizeHP() <= 0) {
+//                        worldMap.getSetPredator().put(coordinate, this);
+//                        worldMap.getSetPredator().get(coordinate).eatHerbivore(worldMap.getSetHerbivore().get(coordinate).getUpHP());
+//                        worldMap.getSetHerbivore().remove(coordinate);
+////                        worldMap.getSetGround().put(coordinate, new Ground(this.getCoordinate()));
+//                        worldMap.getSetPredator().remove(this.getCoordinate());
+//                        worldMap.getSetGround().put(this.getCoordinate(), new Ground(this.getCoordinate()));
+//                        this.setCoordinate(coordinates.get(0));
+//                    }
+//                }
                 coordinates.clear();
             } else if (worldMap.getSetHerbivore().containsKey(coordinates.get(0))) {
                 worldMap.getSetHerbivore().get(coordinates.get(0)).setSizeHP(worldMap.getSetHerbivore().get(coordinates.get(0)).getSizeHP() - this.getAttackPower());
@@ -45,28 +54,37 @@ public class Predator extends Creature {
                     worldMap.getSetPredator().put(coordinates.get(0), this);
                     worldMap.getSetPredator().get(coordinates.get(0)).eatHerbivore(worldMap.getSetHerbivore().get(coordinates.get(0)).getUpHP());
                     worldMap.getSetHerbivore().remove(coordinates.get(0));
-                    worldMap.getSetGround().put(coordinates.get(0), new Ground(this.getCoordinate()));
+//                    worldMap.getSetGround().put(coordinates.get(0), new Ground(this.getCoordinate()));
                     worldMap.getSetPredator().remove(this.getCoordinate());
                     worldMap.getSetGround().put(this.getCoordinate(), new Ground(this.getCoordinate()));
                     this.setCoordinate(coordinates.get(0));
+                    if (worldMap.getSetGrass().containsKey(coordinates.get(0))) {
+                        worldMap.getSetGrass().remove(coordinates.get(0));
+                    }
                 }
             } else if (!(checkHerbivoreAround(worldMap, this) == null)) {
                 Coordinate coordinate = checkHerbivoreAround(worldMap, this);
                 worldMap.getSetHerbivore().get(coordinate).setSizeHP(worldMap.getSetHerbivore().get(coordinate).getSizeHP() - this.getAttackPower());
                 if (worldMap.getSetHerbivore().get(coordinate).getSizeHP() <= 0) {
                     worldMap.getSetPredator().put(coordinate, this);
-                    worldMap.getSetPredator().get(coordinate).eatHerbivore(worldMap.getSetHerbivore().get(coordinates.get(0)).getUpHP());
+                    worldMap.getSetPredator().get(coordinate).eatHerbivore(worldMap.getSetHerbivore().get(coordinate).getUpHP()); //coordinates.get(0)
                     worldMap.getSetHerbivore().remove(coordinate);
-                    worldMap.getSetGround().put(coordinate, new Ground(this.getCoordinate()));
-                    worldMap.getSetPredator().remove(coordinate);
+//                    worldMap.getSetGround().put(coordinate, new Ground(this.getCoordinate()));
+                    worldMap.getSetPredator().remove(this.getCoordinate()); //worldMap.getSetPredator().remove(coordinate);
                     worldMap.getSetGround().put(this.getCoordinate(), new Ground(this.getCoordinate()));
                     this.setCoordinate(coordinates.get(0));
+                    if (worldMap.getSetGrass().containsKey(coordinates.get(0))) {
+                        worldMap.getSetGrass().remove(coordinates.get(0));
+                    }
                 }
             } else {
                 worldMap.getSetPredator().put(coordinates.get(0), this);
                 worldMap.getSetPredator().remove(this.getCoordinate());
                 worldMap.getSetGround().put(this.getCoordinate(), new Ground(this.getCoordinate()));
                 this.setCoordinate(coordinates.get(0));
+                if (worldMap.getSetGrass().containsKey(coordinates.get(0))) {
+                    worldMap.getSetGrass().remove(coordinates.get(0));
+                }
             }
 //                setGround.put(new Coordinate(i, j), new Ground(new Coordinate(i, j)));
 //
@@ -172,7 +190,7 @@ public class Predator extends Creature {
         for (int i = startX; i <= endX; i++) {
             for (int j = startY; j <= endY; j++) {
                 if (worldMap.getSetHerbivore().containsKey(new Coordinate(i, j))) {
-                    return new Coordinate(i, j);
+                    return worldMap.getSetHerbivore().get(new Coordinate(i, j)).getCoordinate();
                 }
             }
         }

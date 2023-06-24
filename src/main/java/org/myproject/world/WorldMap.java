@@ -49,7 +49,7 @@ public class WorldMap {
     }
 
     private void inhabitMap() {
-        int countHerbivore = 7;
+        int countHerbivore = 2;
         int countPredator = 2;
         int countGrass = 3;
         int countRock = 3;

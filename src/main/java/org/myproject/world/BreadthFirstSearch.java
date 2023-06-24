@@ -21,11 +21,9 @@ public class BreadthFirstSearch {
     }
 
     public ArrayList<Coordinate> shortcutsSearch(Creature creature) {
-//        if (creature instanceof Predator) {
-//            drawWordAfterTurn(); //ToDo перемещает животных на карте, которые походили раньше текущего животного
-//        }
 
         cleanMapParent(worldMap);
+        listVisit.clear(); //новая строчка
 
         ArrayList<Coordinate> pathFindToEntity = new ArrayList<>();
 
@@ -39,7 +37,11 @@ public class BreadthFirstSearch {
 
                 listVisit.add(visitedCoordinate); // добавляем в список Посещенные координаты
 
-                queue = replenishQueue(Objects.requireNonNull(visitedCoordinate), queue);// ищем соседей для объекта, который посетили и добавляем в очередь
+                try {
+                    queue = replenishQueue(Objects.requireNonNull(visitedCoordinate), queue);// ищем соседей для объекта, который посетили и добавляем в очередь
+                } catch (Exception e) {
+                    return pathFindToEntity;
+                }
 
                 queue.removeAll(listVisit);// удаляем из очереди, все координаты которые посетили
 
@@ -62,8 +64,6 @@ public class BreadthFirstSearch {
         }
     }
 
-    //ToDo Поиск короткого пути - сделать поиск объекта, а от него по диагонали
-    // сделать возврат к точке, если препятствие, то обойти. Тогда путь будет прямой
     private ArrayList<Coordinate> getPathFindToEntity(Coordinate coordinateFindObj, Creature creature) {
         ArrayList<Coordinate> coordinateList = new ArrayList<>();
         while (!(worldMap.getEntity(coordinateFindObj).getCoordinate().equals(creature.getCoordinate()))) {
