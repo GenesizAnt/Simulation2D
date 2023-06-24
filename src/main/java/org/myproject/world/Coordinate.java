@@ -66,16 +66,3 @@ public class Coordinate {
                 '}';
     }
 }
-
-//class RandomElementFromHashMap {
-//    public static void main(String args[]) {
-//        HashMap<String, Integer> map = new HashMap<String, Integer>();
-//        map.put("apple", 1);
-//        map.put("banana", 2);
-//        map.put("orange", 3);
-//        int randomIndex = new Random().nextInt(map.size());
-//        String key = map.keySet().toArray()[randomIndex].toString();
-//        Integer value = map.get(key);
-//        System.out.println(value);
-//    }
-//}

@@ -5,15 +5,15 @@ import org.myproject.world.Coordinate;
 
 public class Grass extends Entity {
 
-    private int upHP;
+    private int healthUP;
 
     public Grass(Coordinate coordinate) {
         super(coordinate);
-        this.upHP = (int) (Math.random() * 10) + 1;
+        this.healthUP = (int) (Math.random() * 10) + 1;
     }
 
-    public int getUpHP() {
-        return upHP;
+    public int getHealthUP() {
+        return healthUP;
     }
 
     @Override
